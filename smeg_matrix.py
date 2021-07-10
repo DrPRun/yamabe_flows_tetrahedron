@@ -44,8 +44,8 @@ def gauss_curve_calculate(matrix_length):
                 if matrix_length[i, j] != 0 and matrix_length[j, i] != 0:
                     list_of_adjency_vertex.append(sorted([i, j]))
         dictinary_gauss[key] = list(map(list, {tuple(x) for x in list_of_adjency_vertex}))
-    print(dictinary_vertex)
-    gauss_curve = np.full(len(dictinary_gauss), 2 * 3.14, )
+    # print(dictinary_vertex)
+    gauss_curve = np.full(len(dictinary_gauss), 2 * 3.14)
     for key, val in dictinary_gauss.items():
         for v in val:
             a = matrix_length[v[0], v[1]]
@@ -53,10 +53,10 @@ def gauss_curve_calculate(matrix_length):
             c = matrix_length[v[0], key]
             val_arccos = (b**2 + c**2 - a**2) / (2 * c * b)
             if (1 < val_arccos or val_arccos < -1):
-                return  None
+                return  None # если не выполнено неравенство треугольника, то функция возвращает None
             else:
                 gauss_curve[key] -= np.arccos(val_arccos)
-
+    # print('gauss_curve', gauss_curve)
     return (gauss_curve)
 def сayley_menger_determinant(mtx_length, vtx):
     num_vertex = vtx + 1
@@ -64,16 +64,16 @@ def сayley_menger_determinant(mtx_length, vtx):
     for i in range(0, num_vertex):
         for j in range(0, num_vertex):
             if (i == j):
-                cayle_menger_matrix[i, j ] = 0
+                cayle_menger_matrix[i, j] = 0
             elif (i == 0  ):
-                cayle_menger_matrix[i, j ] = 1.
+                cayle_menger_matrix[i, j] = 1.
             elif j == 0:
                 cayle_menger_matrix[i, j] = 1.
             else:
                 cayle_menger_matrix[i, j] = mtx_length[i-1, j -1] ** 2
     print(cayle_menger_matrix)
     determinant = np.linalg.det(cayle_menger_matrix)
-    print( 'determinant:', determinant)
+    # print( 'determinant:', determinant)
     return determinant
 
 

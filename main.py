@@ -27,21 +27,43 @@ for line in lines:  # все номера вершин загоним в спи�
     c = int(ns_vx[2])
     list_faces.append(Faces(a, b, c))
 conformal_weights = np.zeros((VERTEX, TIMES), float)  # конформные веса в вершинах
-gauss_curve = adjacency_matrix(list_faces, VERTEX)  # гауссова кривизна в вершинах многогранника
-length_matrix = adjacency_matrix(list_faces, VERTEX)  # матрица смежности длин рёбер
 for i in range(0, VERTEX):
     conformal_weights[i, 0] = 1
-# заполним матрицу длин рёбер случайными наборами чисел
-# for i in range(0, length_matrix.count_nonzero()):
-#     row, col = length_matrix.nonzero()  # список все индексов в строке, которые
-#     length_matrix[row[i], col[i]] = random.randrange(1, 10, 1) + 0.1*random.randrange(0, 9, 1)
-# # print('hello')
-caley_menger = None
-print('hello')
-while caley_menger != None:
-    for i in range(0, length_matrix.count_nonzero()):
-        row, col = length_matrix.nonzero()  # список все индексов в строке, которые
-        length_matrix[row[i], col[i]] = random.uniform(1, 5)
-    caley_menger = gauss_curve_calculate(length_matrix)
-print(sum(gauss_curve_calculate(length_matrix)))
-print(сayley_menger_determinant(length_matrix, VERTEX) )
+gauss_curve = adjacency_matrix(list_faces, VERTEX)  # гауссова кривизна в вершинах многогранника
+length_matrix = adjacency_matrix(list_faces, VERTEX)  # матрица смежности длин рёбер
+trials = 0
+while True: # запускаем цикл, который образом создаёт тетраэдр с случайным набором длин рёбер
+    # for i in range(0, length_matrix.count_nonzero()):
+    #     row, col = length_matrix.nonzero()  # список все индексов в строке, которые
+    #     length_matrix[row[i], col[i]] = length_matrix[row[i], col[i]] = random.uniform(1, 10) # здесь присваивается значения различным длинам рёбер
+    for i in range(0, VERTEX):
+        for j in range(i, VERTEX):
+            if length_matrix[i, j ] != 0:
+                length_matrix[i, j] = length_matrix[j, i] =  random.uniform(1, 10)
+    try:
+        trials += 1
+        number_of_vertex = len(gauss_curve_calculate(length_matrix)) # проверяем, не схлопнулась ли грань
+    except:
+        number_of_vertex = 0
+    if number_of_vertex == VERTEX: # если все грани в порядке, то завершаем цикл
+        print('trials: ',trials)
+        break
+print(length_matrix.toarray())
+print(сayley_menger_determinant(length_matrix, VERTEX))
+for i in range(0, TIMES):
+    for j in range(0, VERTEX):
+        k1 = k2 = k3 = k4 = .0
+
+
+
+
+
+# caley_menger = None
+# while caley_menger != None:
+#     for i in range(0, length_matrix.count_nonzero()):
+#         row, col = length_matrix.nonzero()  # список все индексов в строке, которые
+#         length_matrix[row[i], col[i]] = random.uniform(1, 10)
+#         print('hello, i am here hello, i am here hello, i am here hello, i am here hello, i am here')
+# caley_menger = gauss_curve_calculate(length_matrix)
+# print(caley_menger)
+# print(сayley_menger_determinant(length_matrix, VERTEX))
