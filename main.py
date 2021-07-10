@@ -6,7 +6,8 @@
 
 import random
 
-import scipy.sparse
+# import numpy as np
+# import scipy.sparse
 
 from faces import Faces
 from smeg_matrix import *
@@ -16,7 +17,8 @@ file_path = '/Users/ruslanpepa/PycharmProjects/yamabe_flows_tetrahedron/tetrahed
 VERTEX = 4  # количество вершин в многограннике
 EDGES = 6  # количество ребер в многограннике
 FACES = 4  # количестов граней в многограннике
-TIMES = 10000  # количество шагов по времени
+TIMES = 1000  # количество шагов по времени
+step_time = 0.001 # шаг по времени
 list_faces = []  # список, который будет содержать все грани
 with open(file_path) as fl_wth_fs:  # выгрузим из файла все номера вершин
     lines = fl_wth_fs.readlines()
@@ -48,11 +50,21 @@ while True: # запускаем цикл, который образом соз�
     if number_of_vertex == VERTEX: # если все грани в порядке, то завершаем цикл
         print('trials: ',trials)
         break
-print(length_matrix.toarray())
-print(сayley_menger_determinant(length_matrix, VERTEX))
-for i in range(0, TIMES):
+gauss_curve = gauss_curve_calculate(length_matrix)
+# print(np.pi)
+print((gauss_curve))
+# print(length_matrix.toarray())
+# print(сayley_menger_determinant(length_matrix, VERTEX))
+for i in range(0, TIMES-1):
     for j in range(0, VERTEX):
-        k1 = k2 = k3 = k4 = .0
+        # k1 = k2 = k3 = k4 = .0
+        k1 = -(gauss_curve[j] - 2.*np.pi / VERTEX)*conformal_weights[j, i]
+        k2 = -(gauss_curve[j] - 2.*np.pi / VERTEX)*(conformal_weights[j, i] + step_time*k1/2.)
+        k3 = -(gauss_curve[j] - 2.*np.pi / VERTEX)*(conformal_weights[j, i] + step_time*k2/2.)
+        k4 = -(gauss_curve[j] - 2.*np.pi / VERTEX)*(conformal_weights[j, i] + step_time*k3)
+        conformal_weights[j, i+1] = conformal_weights[j, i] + (step_time/6.)*(k1 + k2*2. + k3*2. + k4)
+    vector_times = conformal_weights[:, i]
+    print(vector_times)
 
 
 

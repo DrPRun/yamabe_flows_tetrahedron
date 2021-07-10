@@ -76,7 +76,8 @@ def сayley_menger_determinant(mtx_length, vtx):
     # print( 'determinant:', determinant)
     return determinant
 
-
+def get_length(lenth, cmfrU):
+    for i in
 
 
 
