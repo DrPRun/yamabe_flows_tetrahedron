@@ -1,7 +1,9 @@
 # функция, которая будет создавать матрицу смежности
+import math
 
 import numpy as np
 from scipy import sparse
+
 
 # функция, которая создает матрицу смежности
 def adjacency_matrix(faces, vertex):
@@ -29,7 +31,7 @@ def adjacency_matrix(faces, vertex):
 
 
 def gauss_curve_calculate(matrix_length):
-    row, col = matrix_length.nonzero() # в
+    row, col = matrix_length.nonzero()  # в
     dictinary_vertex = {}  # вспомогательный словарь, ключ -- номер вершины, значение -- список вершин, смежных с ключом
     dictinary_gauss = {}  # ключ -- вершина, значение -- пара вершин, которая с ключевой формирует грань
     for j in range(0, matrix_length.count_nonzero()):
@@ -45,41 +47,48 @@ def gauss_curve_calculate(matrix_length):
                     list_of_adjency_vertex.append(sorted([i, j]))
         dictinary_gauss[key] = list(map(list, {tuple(x) for x in list_of_adjency_vertex}))
     # print(dictinary_vertex)
-    gauss_curve = np.full(len(dictinary_gauss), 2 * 3.14)
+    gauss_curve = np.full(len(dictinary_gauss), 2 * np.pi)
     for key, val in dictinary_gauss.items():
         for v in val:
             a = matrix_length[v[0], v[1]]
             b = matrix_length[v[1], key]
             c = matrix_length[v[0], key]
-            val_arccos = (b**2 + c**2 - a**2) / (2 * c * b)
+            val_arccos = (b ** 2 + c ** 2 - a ** 2) / (2 * c * b)
             if (1 < val_arccos or val_arccos < -1):
-                return  None # если не выполнено неравенство треугольника, то функция возвращает None
+                return None  # если не выполнено неравенство треугольника, то функция возвращает None
             else:
                 gauss_curve[key] -= np.arccos(val_arccos)
     # print('gauss_curve', gauss_curve)
     return (gauss_curve)
-def сayley_menger_determinant(mtx_length, vtx):
+
+
+def keyle_menger_det(mtx_length, vtx):
     num_vertex = vtx + 1
     cayle_menger_matrix = np.zeros((num_vertex, num_vertex), float)
     for i in range(0, num_vertex):
         for j in range(0, num_vertex):
             if (i == j):
                 cayle_menger_matrix[i, j] = 0
-            elif (i == 0  ):
+            elif (i == 0):
                 cayle_menger_matrix[i, j] = 1.
             elif j == 0:
                 cayle_menger_matrix[i, j] = 1.
             else:
-                cayle_menger_matrix[i, j] = mtx_length[i-1, j -1] ** 2
-    print(cayle_menger_matrix)
-    determinant = np.linalg.det(cayle_menger_matrix)
+                cayle_menger_matrix[i, j] = mtx_length[i - 1, j - 1] ** 2
+    # print(cayle_menger_matrix)
+    determinant = ((-1) ** (3 + 1) / (2 ** 3 * (math.factorial(3)) ** 2)) * np.linalg.det(cayle_menger_matrix)
     # print( 'determinant:', determinant)
     return determinant
 
+
 def get_length(lenth, cmfrU):
-    for i in
-
-
-
-
-
+    row, col = lenth.nonzero()
+    # print('to_dense:', lenth.todense())
+    # print('row:', row, 'col:', col, lenth.data)
+    # print('size_row:', len(row), 'size_col:', len(col), 'size_data: ', len(lenth.data))
+    for j in range(0, len(row)):
+        lenth[row[j], col[j]] = lenth[col[j], row[j]] = lenth[row[j], col[j]] * cmfrU[row[j]] * cmfrU[col[j]]
+    # for i in range(0, len(cmfrU)):
+    #     for j in range(0, len(cmfrU)):
+    #         lenth[i, j] = lenth[j, i] = lenth[i, j]*cmfrU[i]*cmfrU[j]
+    return lenth

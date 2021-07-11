@@ -12,13 +12,12 @@ import random
 from faces import Faces
 from smeg_matrix import *
 
-
 file_path = '/Users/ruslanpepa/PycharmProjects/yamabe_flows_tetrahedron/tetrahedron.txt'
 VERTEX = 4  # количество вершин в многограннике
 EDGES = 6  # количество ребер в многограннике
 FACES = 4  # количестов граней в многограннике
 TIMES = 1000  # количество шагов по времени
-step_time = 0.001 # шаг по времени
+step_time = 0.001  # шаг по времени
 list_faces = []  # список, который будет содержать все грани
 with open(file_path) as fl_wth_fs:  # выгрузим из файла все номера вершин
     lines = fl_wth_fs.readlines()
@@ -34,41 +33,43 @@ for i in range(0, VERTEX):
 gauss_curve = adjacency_matrix(list_faces, VERTEX)  # гауссова кривизна в вершинах многогранника
 length_matrix = adjacency_matrix(list_faces, VERTEX)  # матрица смежности длин рёбер
 trials = 0
-while True: # запускаем цикл, который образом создаёт тетраэдр с случайным набором длин рёбер
+while True:  # запускаем цикл, который образом создаёт тетраэдр с случайным набором длин рёбер
     # for i in range(0, length_matrix.count_nonzero()):
     #     row, col = length_matrix.nonzero()  # список все индексов в строке, которые
-    #     length_matrix[row[i], col[i]] = length_matrix[row[i], col[i]] = random.uniform(1, 10) # здесь присваивается значения различным длинам рёбер
+    #     length_matrix[row[i], col[i]] = length_matrix[row[i], col[i]] = random.uniform(1, 10)
     for i in range(0, VERTEX):
         for j in range(i, VERTEX):
-            if length_matrix[i, j ] != 0:
-                length_matrix[i, j] = length_matrix[j, i] =  random.uniform(1, 10)
+            if length_matrix[i, j] != 0:
+                length_matrix[i, j] = length_matrix[j, i] = random.uniform(1, 10)
+    number_of_vertex = 0
     try:
         trials += 1
-        number_of_vertex = len(gauss_curve_calculate(length_matrix)) # проверяем, не схлопнулась ли грань
-    except:
-        number_of_vertex = 0
-    if number_of_vertex == VERTEX: # если все грани в порядке, то завершаем цикл
-        print('trials: ',trials)
+        number_of_vertex = len(gauss_curve_calculate(length_matrix))  # проверяем, не схлопнулась ли грань
+    except Exception:
+        continue
+    if number_of_vertex == VERTEX and keyle_menger_det(length_matrix, VERTEX) > 0:  # завершаем цикл
+        print('trials: ', trials)
         break
 gauss_curve = gauss_curve_calculate(length_matrix)
 # print(np.pi)
-print((gauss_curve))
+print(gauss_curve)
 # print(length_matrix.toarray())
 # print(сayley_menger_determinant(length_matrix, VERTEX))
-for i in range(0, TIMES-1):
+for i in range(0, TIMES - 1):
     for j in range(0, VERTEX):
         # k1 = k2 = k3 = k4 = .0
-        k1 = -(gauss_curve[j] - 2.*np.pi / VERTEX)*conformal_weights[j, i]
-        k2 = -(gauss_curve[j] - 2.*np.pi / VERTEX)*(conformal_weights[j, i] + step_time*k1/2.)
-        k3 = -(gauss_curve[j] - 2.*np.pi / VERTEX)*(conformal_weights[j, i] + step_time*k2/2.)
-        k4 = -(gauss_curve[j] - 2.*np.pi / VERTEX)*(conformal_weights[j, i] + step_time*k3)
-        conformal_weights[j, i+1] = conformal_weights[j, i] + (step_time/6.)*(k1 + k2*2. + k3*2. + k4)
-    vector_times = conformal_weights[:, i]
-    print(vector_times)
-
-
-
-
+        k0 = -(gauss_curve[j] - 2. * np.pi / VERTEX) * conformal_weights[j, i]
+        k1 = -(gauss_curve[j] - 2. * np.pi / VERTEX) * (conformal_weights[j, i] + step_time * k0 / 2.)
+        k2 = -(gauss_curve[j] - 2. * np.pi / VERTEX) * (conformal_weights[j, i] + step_time * k1 / 2.)
+        k3 = -(gauss_curve[j] - 2. * np.pi / VERTEX) * (conformal_weights[j, i] + step_time * k2)
+        conformal_weights[j, i + 1] = conformal_weights[j, i] + (step_time / 6.) * (k0 + k1 * 2. + k2 * 2. + k3)
+    # vector_times = conformal_weights[:, i]
+    print('kaly_menger:', keyle_menger_det(length_matrix, VERTEX))
+    length_matrix = get_length(length_matrix, conformal_weights[:, i])  # Пересчитываем все длины сторон
+    gauss_curve = gauss_curve_calculate(length_matrix)  # Пересчитываем все значения кривизн в вершинах тетраэдра
+    print('sum gauss curve:', sum(gauss_curve))
+    print(length_matrix.todense())
+    print('number of iteration: ', i)
 
 # caley_menger = None
 # while caley_menger != None:
@@ -78,4 +79,4 @@ for i in range(0, TIMES-1):
 #         print('hello, i am here hello, i am here hello, i am here hello, i am here hello, i am here')
 # caley_menger = gauss_curve_calculate(length_matrix)
 # print(caley_menger)
-# print(сayley_menger_determinant(length_matrix, VERTEX))
+
