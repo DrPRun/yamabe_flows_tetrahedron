@@ -67,9 +67,9 @@ def keyle_menger_det(mtx_length, vtx):
     cayle_menger_matrix = np.zeros((num_vertex, num_vertex), float)
     for i in range(0, num_vertex):
         for j in range(0, num_vertex):
-            if (i == j):
+            if i == j:
                 cayle_menger_matrix[i, j] = 0
-            elif (i == 0):
+            elif i == 0:
                 cayle_menger_matrix[i, j] = 1.
             elif j == 0:
                 cayle_menger_matrix[i, j] = 1.
