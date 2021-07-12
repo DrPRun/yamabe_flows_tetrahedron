@@ -22,6 +22,7 @@ def adjacency_matrix(faces, vertex):
         row.append(fs[2])
         col.append(fs[1])
         row.append(fs[2])
+    print('row and col:', row ,  col)
     data = [1.] * len(row)  # массив единиц, нужен для конструктора разреженной матрицы
     space_row = np.array(row)
     space_col = np.array(col)
@@ -76,7 +77,7 @@ def keyle_menger_det(mtx_length, vtx):
             else:
                 cayle_menger_matrix[i, j] = mtx_length[i - 1, j - 1] ** 2
     # print(cayle_menger_matrix)
-    determinant = ((-1) ** (3 + 1) / (2 ** 3 * (math.factorial(3)) ** 2)) * np.linalg.det(cayle_menger_matrix)
+    determinant = ((-1) ** ((vtx-1) + 1) / (2 ** (vtx-1) * (math.factorial(3)) ** 2)) * np.linalg.det(cayle_menger_matrix)
     # print( 'determinant:', determinant)
     return determinant
 
@@ -87,8 +88,9 @@ def get_length(lenth, cmfrU):
     # print('row:', row, 'col:', col, lenth.data)
     # print('size_row:', len(row), 'size_col:', len(col), 'size_data: ', len(lenth.data))
     for j in range(0, len(row)):
-        lenth[row[j], col[j]] = lenth[col[j], row[j]] = lenth[row[j], col[j]] * cmfrU[row[j]] * cmfrU[col[j]]
-    # for i in range(0, len(cmfrU)):
+        lenth[row[j], col[j]] = lenth[row[j], col[j]] * cmfrU[row[j]] * cmfrU[col[j]]
+        lenth[col[j], row[j]] = lenth[row[j], col[j]] * cmfrU[row[j]] * cmfrU[col[j]]
+        # for i in range(0, len(cmfrU)):
     #     for j in range(0, len(cmfrU)):
     #         lenth[i, j] = lenth[j, i] = lenth[i, j]*cmfrU[i]*cmfrU[j]
     return lenth
