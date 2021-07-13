@@ -56,9 +56,6 @@ length_of_tetrahedron[0, 0] = length_matrix[0, 1]
 length_of_tetrahedron[1, 0] = length_matrix[1, 2]
 length_of_tetrahedron[2, 0] = length_matrix[0, 2]
 
-# print(type(lgauss_curve[1]))
-# df = pd.DataFrame({'gauss_VTX_№0': gauss_curve[0], 'gauss_VTX_№1': gauss_curve[1], 'gauss_VTX_№2': gauss_curve[2], 'gauss_VTX_№3': gauss_curve[3]})
-# print(df)
 
 for i in range(0, TIMES - 1):
     for j in range(0, VERTEX):
