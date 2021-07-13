@@ -56,7 +56,7 @@ def gauss_curve_calculate(matrix_length):
             c = matrix_length[v[0], key]
             val_arccos = (b ** 2 + c ** 2 - a ** 2) / (2 * c * b)
             if (1 < val_arccos or val_arccos < -1):
-                return None  # если не выполнено неравенство треугольника, то функция возвращает None
+                return []  # если не выполнено неравенство треугольника, то функция возвращает None
             else:
                 gauss_curve[key] -= np.arccos(val_arccos)
     # print('gauss_curve', gauss_curve)
@@ -77,7 +77,7 @@ def keyle_menger_det(mtx_length, vtx):
             else:
                 cayle_menger_matrix[i, j] = mtx_length[i - 1, j - 1] ** 2
     # print(cayle_menger_matrix)
-    determinant = ((-1) ** ((vtx-1) + 1) / (2 ** (vtx-1) * (math.factorial(3)) ** 2)) * np.linalg.det(cayle_menger_matrix)
+    determinant = ((-1) ** ((vtx-1) + 1) / ((2 ** (vtx-1)) * (math.factorial(vtx - 1)) ** 2)) * np.linalg.det(cayle_menger_matrix)
     # print( 'determinant:', determinant)
     return determinant
 
