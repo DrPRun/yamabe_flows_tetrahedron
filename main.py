@@ -16,7 +16,7 @@ file_path = '/Users/ruslanpepa/PycharmProjects/yamabe_flows_tetrahedron/tetrahed
 VERTEX = 4  # количество вершин в многограннике
 EDGES = 6  # количество ребер в многограннике
 FACES = 4  # количестов граней в многограннике
-TIMES = 500 # количество шагов по времени
+TIMES = 100 # количество шагов по времени
 step_time = 0.01  # шаг по времени
 list_faces = []  # список, который будет содержать все грани
 with open(file_path) as fl_wth_fs:  # выгрузим из файла все номера вершин
@@ -29,11 +29,11 @@ for line in lines:  # все номера вершин загоним в спи�
     list_faces.append(Faces(a, b, c))
 conformal_weights = np.ones((VERTEX, TIMES), float)  # конформные веса в вершинах
 gauss_curvature = np.zeros((VERTEX, TIMES), float) # гауссова кривизна в начальный момент времени
-length_of_tetrahedron = np.zeros((EDGES, TIMES), float) # экспериментальная матрица для отображения длин рёбер
+length_of_tetrahedron = np.ones((EDGES, TIMES), float) # экспериментальная матрица для отображения длин рёбер
 kayli_manger = np.zeros((FACES, TIMES), float) # массив, который будет содержать значения определителей Кэлли-Менгера на грани
 length_matrix = adjacency_matrix(list_faces, VERTEX)  # матрица смежности длин рёбер
-print('len(length_of_tetrahedron[1, :]):', len(length_of_tetrahedron[1, :]))
-print(length_matrix.todense())
+# print('len(length_of_tetrahedron[1, :]):', len(length_of_tetrahedron[1, :]))
+# print(length_matrix.todense())
 trials = 0
 while True:  # запускаем цикл, который образом создаёт тетраэдр с случайным набором длин рёбер
     for i in range(0, VERTEX):
@@ -47,7 +47,7 @@ while True:  # запускаем цикл, который образом соз
     else:
         break
 gauss_curve = gauss_curve_calculate(length_matrix)
-print('gauss_curve: hello', gauss_curve)
+# print('gauss_curve: hello', gauss_curve)
 for i in range(0, VERTEX):
     gauss_curvature[0, i] = gauss_curve[i]
     print(gauss_curvature[0, i])
@@ -103,15 +103,15 @@ for i in range(0, TIMES - 1):
         break
     for j in range(0, VERTEX):
         gauss_curvature[j, i+1] = gauss_curve[j]
-    print('gauss curve:', gauss_curve)
+    # print('gauss curve:', gauss_curve)
     length_of_tetrahedron[0,i+1 ] = length_matrix[0, 1]
     length_of_tetrahedron[1, i+1] = length_matrix[1, 2]
     length_of_tetrahedron[2, i+1] = length_matrix[0, 2]
 
 
-# plt.plot(kayli_manger[0, 0:-2])
-# plt.plot(kayli_manger[1, 0:-2])
-# plt.plot(kayli_manger[2, 0:-2])
+plt.plot(kayli_manger[0, 0:-2])
+plt.plot(kayli_manger[1, 0:-2])
+plt.plot(kayli_manger[2, 0:-2])
 # plt.plot(massiv_sum)
 # plt.plot(length_matrix[1,2])
 # plt.plot(sum(gauss_curvature[:, 0:-2]))
