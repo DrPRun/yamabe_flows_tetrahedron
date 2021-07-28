@@ -6,8 +6,8 @@ from main import  *
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-ax.set_xlim(0,10)
-ax.set_ylim(-0,10)
+ax.set_xlim(0, 10)
+ax.set_ylim(-0, 2)
 
 a = length_of_tetrahedron[0, 0]
 b = length_of_tetrahedron[1, 0]
@@ -42,4 +42,4 @@ def animate(i):
 ani = animation.FuncAnimation(fig, animate, np.arange(1, TIMES), init_func=init,
                               interval=100, blit=True)
 
-# ani.save('sine_wave.gif', writer='pillow')
+ani.save('sine_wave.gif', writer='pillow')

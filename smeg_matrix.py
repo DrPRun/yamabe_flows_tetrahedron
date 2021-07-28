@@ -84,6 +84,7 @@ def keyle_menger_det(mtx_length, vtx):
     return determinant
 
 
+
 def get_length(lenth, cmfrU):
     row, col = lenth.nonzero()
     data = [1.] * len(row)
@@ -103,3 +104,32 @@ def get_length(lenth, cmfrU):
     #     for j in range(0, len(cmfrU)):
     #         lenth[i, j] = lenth[j, i] = lenth[i, j]*cmfrU[i]*cmfrU[j]
     return new_length_matrix
+
+
+def fasec_kayli_menger (matrix_length):
+    row, col = matrix_length.nonzero()  # в
+    dictinary_vertex = {}  # вспомогательный словарь, ключ -- номер вершины, значение -- список вершин, смежных с ключом
+    dictinary_gauss = {}  # ключ -- вершина, значение -- пара вершин, которая с ключевой формирует грань
+    for j in range(0, matrix_length.count_nonzero()):
+        if row[j] not in dictinary_vertex.keys():
+            dictinary_vertex[row[j]] = [col[j]]
+        else:
+            dictinary_vertex[row[j]].append(col[j])
+    for key, val in dictinary_vertex.items():
+        list_of_adjency_vertex = []
+        for i in val:
+            for j in val:
+                if matrix_length[i, j] != 0 and matrix_length[j, i] != 0:
+                    list_of_adjency_vertex.append(sorted([i, j]))
+        dictinary_gauss[key] = list(map(list, {tuple(x) for x in list_of_adjency_vertex}))
+    # print(dictinary_vertex)
+    for key, val in dictinary_gauss.items():
+        for v in val:
+            a = matrix_length[v[0], v[1]]
+            b = matrix_length[v[1], key]
+            c = matrix_length[v[0], key]
+            val_arccos = (b ** 2 + c ** 2 - a ** 2) / (2 * c * b)
+            if (1 < val_arccos or val_arccos < -1):
+                return False  # если не выполнено неравенство треугольника, то функция возвращает None
+    # print('gauss_curve', gauss_curve)
+    return True
