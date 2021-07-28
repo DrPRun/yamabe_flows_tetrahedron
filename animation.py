@@ -7,7 +7,7 @@ from main import  *
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax.set_xlim(0,10)
-ax.set_ylim(-0,20)
+ax.set_ylim(-0,10)
 
 a = length_of_tetrahedron[0, 0]
 b = length_of_tetrahedron[1, 0]
@@ -28,8 +28,8 @@ def animate(i):
     a = length_of_tetrahedron[0, i]
     b = length_of_tetrahedron[1, i]
     c = length_of_tetrahedron[2, i]
-    print(length_matrix.todense())
-    print('a, b , c:', a, b, c)
+    # print(length_matrix.todense())
+    # print('a, b , c:', a, b, c)
     try:
         cosine = (a ** 2 + c ** 2 - b ** 2) / (2 * a * b)
         sinus = np.sqrt(1 - cosine ** 2)
@@ -42,4 +42,4 @@ def animate(i):
 ani = animation.FuncAnimation(fig, animate, np.arange(1, TIMES), init_func=init,
                               interval=100, blit=True)
 
-ani.save('sine_wave.gif', writer='pillow')
+# ani.save('sine_wave.gif', writer='pillow')

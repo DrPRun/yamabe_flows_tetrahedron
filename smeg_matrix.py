@@ -12,17 +12,19 @@ def adjacency_matrix(faces, vertex):
     for fs in faces:
         row.append(fs[0])
         col.append(fs[1])
+        row.append(fs[1])
+        col.append(fs[0])
+
+        row.append(fs[1])
+        col.append(fs[2])
+        col.append(fs[2])
+        row.append(fs[1])
+
+        col.append(fs[2])
         row.append(fs[0])
-        col.append(fs[2])
-        row.append(fs[1])
-        col.append(fs[2])
-        col.append(fs[0])
-        row.append(fs[1])
         col.append(fs[0])
         row.append(fs[2])
-        col.append(fs[1])
-        row.append(fs[2])
-    print('row and col:', row ,  col)
+    # print('row and col:', row ,  col)
     data = [1.] * len(row)  # массив единиц, нужен для конструктора разреженной матрицы
     space_row = np.array(row)
     space_col = np.array(col)
@@ -84,13 +86,20 @@ def keyle_menger_det(mtx_length, vtx):
 
 def get_length(lenth, cmfrU):
     row, col = lenth.nonzero()
+    data = [1.] * len(row)
+
+    space_row = np.array(row)
+    space_col = np.array(col)
+    space_data = np.array(data)
+    new_length_matrix = sparse.coo_matrix((space_data, (space_row, space_col)), shape=(4, 4)).tocsc()
+
     # print('to_dense:', lenth.todense())
     # print('row:', row, 'col:', col, lenth.data)
     # print('size_row:', len(row), 'size_col:', len(col), 'size_data: ', len(lenth.data))
     for j in range(0, len(row)):
-        lenth[row[j], col[j]] = lenth[row[j], col[j]] * cmfrU[row[j]] * cmfrU[col[j]]
-        lenth[col[j], row[j]] = lenth[row[j], col[j]] * cmfrU[row[j]] * cmfrU[col[j]]
+        new_length_matrix[row[j], col[j]] = lenth[row[j], col[j]] * cmfrU[row[j]] * cmfrU[col[j]]
+        new_length_matrix[col[j], row[j]] = lenth[col[j], row[j]] * cmfrU[col[j]] * cmfrU[row[j]]
         # for i in range(0, len(cmfrU)):
     #     for j in range(0, len(cmfrU)):
     #         lenth[i, j] = lenth[j, i] = lenth[i, j]*cmfrU[i]*cmfrU[j]
-    return lenth
+    return new_length_matrix

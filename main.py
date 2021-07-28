@@ -16,8 +16,8 @@ file_path = '/Users/ruslanpepa/PycharmProjects/yamabe_flows_tetrahedron/tetrahed
 VERTEX = 4  # количество вершин в многограннике
 EDGES = 6  # количество ребер в многограннике
 FACES = 4  # количестов граней в многограннике
-TIMES = 100 # количество шагов по времени
-step_time = 0.01  # шаг по времени
+TIMES = 1000 # количество шагов по времени
+step_time = 0.001  # шаг по времени
 list_faces = []  # список, который будет содержать все грани
 with open(file_path) as fl_wth_fs:  # выгрузим из файла все номера вершин
     lines = fl_wth_fs.readlines()
@@ -39,7 +39,7 @@ while True:  # запускаем цикл, который образом соз
     for i in range(0, VERTEX):
         for j in range(i, VERTEX):
             if length_matrix[i, j] != 0:
-                length_matrix[i, j] = length_matrix[j, i] = random.uniform(8, 9)
+                length_matrix[i, j] = length_matrix[j, i] = random.uniform(1, 9)
     trials += 1
     print(trials)
     if len(gauss_curve_calculate(length_matrix)) != VERTEX or keyle_menger_det(length_matrix, VERTEX) <= 0:
@@ -90,26 +90,28 @@ for i in range(0, TIMES - 1):
         times += 1
         # print('keyli_menger:',kl_mng)
 
-
-
-    length_matrix = get_length(length_matrix, conformal_weights[:, i+1])  # Пересчитываем все длины сторон
-    gauss_curve = gauss_curve_calculate(length_matrix)  # Пересчитываем все значения кривизн в вершинах тетраэдра
+    i_lng_mtx = get_length(length_matrix, conformal_weights[:, i+1])  # Пересчитываем все длины сторон
+    gauss_curve = gauss_curve_calculate(i_lng_mtx)  # Пересчитываем все значения кривизн в вершинах тетраэдра
     if len(gauss_curve) != VERTEX:
         break
-    if keyle_menger_det(length_matrix, VERTEX) <= 0 :
+    if keyle_menger_det(i_lng_mtx, VERTEX) <= 0:
         break
     for j in range(0, VERTEX):
         gauss_curvature[j, i+1] = gauss_curve[j]
     # print('gauss curve:', gauss_curve)
-    length_of_tetrahedron[0,i+1 ] = length_matrix[0, 1]
-    length_of_tetrahedron[1, i+1] = length_matrix[1, 2]
-    length_of_tetrahedron[2, i+1] = length_matrix[0, 2]
+    length_of_tetrahedron[0, i+1] = i_lng_mtx[0, 1]
+    length_of_tetrahedron[1, i+1] = i_lng_mtx[1, 2]
+    length_of_tetrahedron[2, i+1] = i_lng_mtx[0, 2]
 
 
-plt.plot(kayli_manger[0, 0:-2])
-plt.plot(kayli_manger[1, 0:-2])
-plt.plot(kayli_manger[2, 0:-2])
+plt.plot(gauss_curvature[0, 1:-2])
+plt.plot(gauss_curvature[1, 1:-2])
+plt.plot(gauss_curvature[2, 1:-2])
+plt.plot(gauss_curvature[3, 1:-2])
+# plt.plot(kayli_manger[1, 0:-2])
+# plt.plot(kayli_manger[2, 0:-2])
 # plt.plot(massiv_sum)
 # plt.plot(length_matrix[1,2])
 # plt.plot(sum(gauss_curvature[:, 0:-2]))
+plt.savefig('gauss_grafik.png')
 plt.show()
