@@ -6,6 +6,7 @@
 
 import random
 #### тестируем создание веток
+#### еще раз тестируем git
 
 import matplotlib.pyplot as plt
 
