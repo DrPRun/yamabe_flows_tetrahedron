@@ -9,6 +9,7 @@ import random
 #### еще раз тестируем git
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from faces import Faces
 from smeg_matrix import *
@@ -37,33 +38,30 @@ length_matrix = adjacency_matrix(list_faces, VERTEX)  # матрица смеж�
 # print('len(length_of_tetrahedron[1, :]):', len(length_of_tetrahedron[1, :]))
 # print(length_matrix.todense())
 trials = 0
-# length_matrix[0, 1] = length_matrix[1, 0] = 3
-# length_matrix[0, 2] = length_matrix[2, 0] = 3
-# length_matrix[1, 2] = length_matrix[2, 1] = 3
-# length_matrix[0, 3] = length_matrix[3, 0] = 1.6
-# length_matrix[1, 3] = length_matrix[3, 1] = 1.7
+while True:  # запускаем цикл, который образом создаёт тетраэдр с случайным набором длин рёбер
+    for i in range(0, VERTEX):
+        for j in range(i, VERTEX):
+            if length_matrix[i, j] != 0:
+                length_matrix[i, j] = length_matrix[j, i] = random.uniform(1, 9)
+    trials += 1
+    print(trials)
+    good_faces = len(gauss_curve_calculate(length_matrix)) == VERTEX
+    gauss_curve = gauss_curve_calculate(length_matrix)
+    print(type( gauss_curve))
+    pos_gauss_vertex = np.any(gauss_curve < 0)
+    if good_faces and pos_gauss_vertex:
+        break
+    else:
+        continue
 
-
-
-# while True:  # запускаем цикл, который образом создаёт тетраэдр с случайным набором длин рёбер
-#     for i in range(0, VERTEX):
-#         for j in range(i, VERTEX):
-#             if length_matrix[i, j] != 0:
-#                 length_matrix[i, j] = length_matrix[j, i] = random.uniform(1, 9)
-#     trials += 1
-#     print(trials)
-#     if len(gauss_curve_calculate(length_matrix)) != VERTEX or keyle_menger_det(length_matrix, VERTEX) <= 0:
-#         continue
-#     else:
+# while True:
+#     gauss_curve = gauss_curve_calculate(length_matrix)
+#     # print('len(np.where(gauss_curve < 0 ))', gauss_curve[gauss_curve < 0])
+#     if (len(gauss_curve[gauss_curve < 0]) == 1):
 #         break
-length_matrix[0, 1] = length_matrix[1, 0] = 3.05
-length_matrix[0, 2] = length_matrix[2, 0] = 3.07
-length_matrix[1, 2] = length_matrix[2, 1] = 3.
-length_matrix[0, 3] = length_matrix[3, 0] = 1.6
-length_matrix[1, 3] = length_matrix[3, 1] = 1.72
-length_matrix[2, 3] = length_matrix[3, 2] = 1.7
-
-gauss_curve = gauss_curve_calculate(length_matrix)
+#     else:
+#         print(gauss_curve)
+#         continue
 print('sum_of_gauss_curves:', sum(gauss_curve))
 for i in range(0, VERTEX):
     gauss_curvature[i, 0] = gauss_curve[i]
@@ -75,6 +73,8 @@ length_of_tetrahedron[2, 0] = length_matrix[0, 2]
 
 
 for i in range(0, TIMES - 1):
+    if i%1000 == 0:
+        print(i)
     for j in range(0, VERTEX):
         # k1 = k2 = k3 = k4 = .0
         k0 = -(gauss_curve[j] - 4. * np.pi / VERTEX) * conformal_weights[j, i]

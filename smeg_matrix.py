@@ -58,7 +58,7 @@ def gauss_curve_calculate(matrix_length):
             c = matrix_length[v[0], key]
             val_arccos = (b ** 2 + c ** 2 - a ** 2) / (2 * c * b)
             if (1 < val_arccos or val_arccos < -1):
-                return []  # если не выполнено неравенство треугольника, то функция возвращает None
+                return np.full(0,1)  # если не выполнено неравенство треугольника, то функция возвращает None
             else:
                 gauss_curve[key] -= np.arccos(val_arccos)
     # print('gauss_curve', gauss_curve)
