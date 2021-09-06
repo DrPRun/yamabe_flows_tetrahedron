@@ -19,7 +19,7 @@ file_path = '/Users/ruslanpepa/PycharmProjects/yamabe_flows_tetrahedron/tetrahed
 VERTEX = 4  # количество вершин в многограннике
 EDGES = 6  # количество ребер в многограннике
 FACES = 4  # количестов граней в многограннике
-TIMES = 10000 # количество шагов по времени
+TIMES = 12000 # количество шагов по времени
 step_time = 0.0001  # шаг по времени
 list_faces = []  # список, который будет содержать все грани
 with open(file_path) as fl_wth_fs:  # выгрузим из файла все номера вершин
@@ -30,6 +30,8 @@ for line in lines:  # все номера вершин загоним в спи�
     b = int(ns_vx[1])
     c = int(ns_vx[2])
     list_faces.append(Faces(a, b, c))
+max_gauss_curv = np.ones(TIMES, float) # график максимальной кривизнв веришне
+min_gauss_curv = np.ones(TIMES, float) # график минимальной кривизнв веришне
 conformal_weights = np.ones((VERTEX, TIMES), float)  # конформные веса в вершинах
 gauss_curvature = np.zeros((VERTEX, TIMES), float) # гауссова кривизна в начальный момент времени
 length_of_tetrahedron = np.ones((EDGES, TIMES), float) # экспериментальная матрица для отображения длин рёбер
@@ -71,7 +73,8 @@ length_of_tetrahedron[0, 0] = length_matrix[0, 1]
 length_of_tetrahedron[1, 0] = length_matrix[1, 2]
 length_of_tetrahedron[2, 0] = length_matrix[0, 2]
 
-
+max_gauss_curv[0] = max(gauss_curve)
+min_gauss_curv[0] = min(gauss_curve)
 for i in range(0, TIMES - 1):
     if i%1000 == 0:
         print(i)
@@ -117,6 +120,8 @@ for i in range(0, TIMES - 1):
         break
     for j in range(0, VERTEX):
         gauss_curvature[j, i+1] = gauss_curve[j]
+        max_gauss_curv [i+1] = max(gauss_curve)
+        min_gauss_curv[i+1] = min(gauss_curve)
     # print('gauss curve:', gauss_curve)
     length_of_tetrahedron[0, i+1] = i_lng_mtx[0, 1]
     length_of_tetrahedron[1, i+1] = i_lng_mtx[1, 2]
@@ -133,16 +138,43 @@ for i in range(0, TIMES - 1):
 # plt.plot(length_matrix[1,2])
 # plt.plot(sum(gauss_curvature[:, 0:-2]))
 # plt.savefig('gauss_grafik.png')
-plt.figure()
-plt.subplot(221)
-plt.plot(gauss_curvature[0, 0:-2])
-plt.subplot(222)
-plt.plot(gauss_curvature[1, 0:-2])
-plt.subplot(223)
-plt.plot(gauss_curvature[2, 0:-2])
-plt.subplot(224)
-plt.plot(gauss_curvature[3, 0:-2])
-plt.show()
+##############
+# код для изображения графика кривизн
+# plt.figure()
+# plt.subplot(221)
+# plt.plot(gauss_curvature[0, 0:-2])
+# plt.subplot(222)
+# plt.plot(gauss_curvature[1, 0:-2])
+# plt.subplot(223)
+# plt.plot(gauss_curvature[2, 0:-2])
+# plt.subplot(224)
+# plt.plot(gauss_curvature[3, 0:-2])
+# ## конец кода для изображения графиков
+# ####################
+# plt.figure()
+# plt.subplot(221)
+# plt.plot(max_gauss_curv)
+# plt.subplot(222)
+# plt.plot(min_gauss_curv)
+# plt.show()
 
+fig, axes = plt.subplots(2)
+# plt.ylim(-2,5)
+# plt.ylim(-2,5)
+# axes[0].plot(gauss_curvature[0, 0:-2], gauss_curvature[1, 0:-2], 'r')
+# plt.ylim(-2,5)
+# axes[0, 1].plot(gauss_curvature[1, 0:-2])
+# axes[1, 0].plot(gauss_curvature[2, 0:-2])
+# axes[1, 1].plot(gauss_curvature[3, 0:-2])
+# axes[1].plot(max_gauss_curv, min_gauss_curv)
+# axes[2, 1].plot(min_gauss_curv)
+
+axes[0].plot(gauss_curvature[0, 0:-2], 'b')
+axes[0].plot(gauss_curvature[1, 0:-2], 'r')
+axes[0].plot(gauss_curvature[2, 0:-2], 'g')
+axes[0].plot(gauss_curvature[3, 0:-2])
+axes[1].plot(max_gauss_curv)
+axes[1].plot(min_gauss_curv)
+plt.show()
 for i in range(0, VERTEX):
     print('gauss_curvature in vertex', i, gauss_curvature[i, 0])
